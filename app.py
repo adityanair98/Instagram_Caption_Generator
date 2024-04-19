@@ -14,15 +14,21 @@ warnings.filterwarnings("ignore")
 # BLIP Model
 from transformers import BlipForConditionalGeneration, BlipProcessor
 blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
-with open("models/blip_model.pkl", "rb") as f:
-    blip_model = pickle.load(f)
+# Caption Model
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+caption_tokenizer = AutoTokenizer.from_pretrained("prasanthsagirala/text-to-social-media-captions")
+caption_model = AutoModelForSeq2SeqLM.from_pretrained("prasanthsagirala/text-to-social-media-captions")
 
-with open("models/caption_tokenizer.pkl", "rb") as f:
-    caption_tokenizer = pickle.load(f)
+# with open("models/blip_model.pkl", "rb") as f:
+#     blip_model = pickle.load(f)
 
-with open("models/caption_model.pkl", "rb") as f:
-    caption_model = pickle.load(f)
+# with open("models/caption_tokenizer.pkl", "rb") as f:
+#     caption_tokenizer = pickle.load(f)
+
+# with open("models/caption_model.pkl", "rb") as f:
+#     caption_model = pickle.load(f)
 
 
 # Set pre-defined page configurations
