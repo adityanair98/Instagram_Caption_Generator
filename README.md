@@ -8,8 +8,9 @@
 - [Project Overview](#project-overview)
 - [Dataset Description](#dataset-description)
 - [Features](#features)
-- [Technologies Used](#technologies-used)
 - [Usage](#usage)
+- [Installation](#installation)
+- [Technologies Used](#technologies-used)
 - [Contributors](#contributors)
 
 ## Project Overview
