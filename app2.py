@@ -1,3 +1,9 @@
+"""
+This script defines the InstaMuse app, which generates Instagram captions for
+uploaded images. The app uses two models: BLIP for image captioning and Gemini
+for generating Instagram captions. The app is built using Streamlit and the
+Google Generative AI API, along with the Hugging Face Transformers library.
+"""
 from os import getenv
 import streamlit as st
 from PIL import Image
