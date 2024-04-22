@@ -1,8 +1,16 @@
+"""
+This script defines the InstaMuse app, which generates Instagram captions for
+uploaded images. The app uses two models: BLIP for image captioning and Gemini
+for generating Instagram captions. The app is built using Streamlit and the
+Google Generative AI API, along with the Hugging Face Transformers library.
+"""
+from os import getenv
 import streamlit as st
 from PIL import Image
 from torchvision import transforms
 from transformers import AutoProcessor, BlipForConditionalGeneration
 import google.generativeai as genai
+from dotenv import load_dotenv
 
 # Define model
 
@@ -13,7 +21,12 @@ blip_model = BlipForConditionalGeneration.\
     from_pretrained("Salesforce/blip-image-captioning-base")
 
 # Initialize the caption to instagram post model - gemini
-GOOGLE_API_KEY = 'AIzaSyDMeFOnOflzYJ-cjedJ8ky9AE-yThcNXFk'
+
+# Load environment variables
+load_dotenv()
+GOOGLE_API_KEY = getenv("GOOGLE_API_KEY")
+
+# Configure the generative AI API
 genai.configure(api_key=GOOGLE_API_KEY)
 gemini_model = genai.GenerativeModel('gemini-pro')
 
