@@ -1,8 +1,10 @@
+from os import getenv
 import streamlit as st
 from PIL import Image
 from torchvision import transforms
 from transformers import AutoProcessor, BlipForConditionalGeneration
 import google.generativeai as genai
+from dotenv import load_dotenv
 
 # Define model
 
@@ -13,7 +15,12 @@ blip_model = BlipForConditionalGeneration.\
     from_pretrained("Salesforce/blip-image-captioning-base")
 
 # Initialize the caption to instagram post model - gemini
-GOOGLE_API_KEY = 'AIzaSyDMeFOnOflzYJ-cjedJ8ky9AE-yThcNXFk'
+
+# Load environment variables
+load_dotenv()
+GOOGLE_API_KEY = getenv("GOOGLE_API_KEY")
+
+# Configure the generative AI API
 genai.configure(api_key=GOOGLE_API_KEY)
 gemini_model = genai.GenerativeModel('gemini-pro')
 
