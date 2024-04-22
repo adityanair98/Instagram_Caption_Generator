@@ -1,7 +1,7 @@
-streamlit
-Pillow
-numpy
-torch
-torchvision
-transformers
-google.generativeai
+streamlit == 1.33.0
+pillow == 10.3.0
+numpy == 1.26.4
+pytorch == 2.1.0
+torchvision == 0.15.2
+transformers == 4.39.3
+google-generativeai == 0.5.2
