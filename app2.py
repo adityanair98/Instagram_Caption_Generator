@@ -5,6 +5,7 @@ for generating Instagram captions. The app is built using Streamlit and the
 Google Generative AI API, along with the Hugging Face Transformers library.
 """
 from os import getenv
+from os.path import expanduser
 import streamlit as st
 from PIL import Image
 from torchvision import transforms
@@ -69,7 +70,17 @@ def import_and_predict(image_data):
                 **Caption 5**: [caption text] \n
                 """
     response = gemini_model.generate_content(prompt)
-    return response.text
+    return response.parts[0].text
+
+
+# file = expanduser('~/msds/advanced-ml/my-projects/blip2/instamodel.jpeg')
+# image = Image.open(file).convert('RGB')
+#
+# predictions = import_and_predict(image)
+# # print(type(predictions))
+# # [print(p) for p in predictions]
+# print(predictions.parts[0])
+# # print(predictions['response']['text'])
 
 
 # Define streamlit configurations
@@ -108,12 +119,11 @@ st.write("""
          )
 
 # Upload image file and process image
-file = st.file_uploader("", type=["jpg", "png"])
+file = st.file_uploader("Upload your image here:", type=["jpg", "png"])
 
 if file is not None:
     # Create two columns for the image and the captions
     col1, col2 = st.columns(2)
-    
     with col1:
         # Image column, left screen.
         st.markdown("#### Photo:")
