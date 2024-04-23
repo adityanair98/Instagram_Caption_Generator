@@ -73,16 +73,6 @@ def import_and_predict(image_data):
     return response.parts[0].text
 
 
-# file = expanduser('~/msds/advanced-ml/my-projects/blip2/instamodel.jpeg')
-# image = Image.open(file).convert('RGB')
-#
-# predictions = import_and_predict(image)
-# # print(type(predictions))
-# # [print(p) for p in predictions]
-# print(predictions.parts[0])
-# # print(predictions['response']['text'])
-
-
 # Define streamlit configurations
 
 # Set pre-defined page configurations
