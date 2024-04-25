@@ -8,7 +8,6 @@ import streamlit as st
 from PIL import Image
 import script
 
-
 # Define Streamlit configurations
 st.set_page_config(page_title="Instamuse", page_icon=":camera:", initial_sidebar_state='auto')
 
@@ -16,7 +15,8 @@ st.set_page_config(page_title="Instamuse", page_icon=":camera:", initial_sidebar
 with st.sidebar:
     st.image('insta.png')
     st.title("InstaMuse")
-    st.subheader("Welcome to InstaMuse, the ultimate tool for turning your snapshots into social media sensations!")
+    st.subheader("Welcome to InstaMuse, the ultimate tool for turning\
+     your snapshots into social media sensations!")
     st.write("Start turning heads with your posts. Use InstaMuse now and watch your likes soar!")
 
 # Main page content
@@ -51,7 +51,11 @@ if file is not None:
     with col2:
         try:
             st.write("### Generating Captions... 🧠")
-            st.write(script.import_and_predict(image))
+            caption_generator = script.InstagramCaptionGenerator()
+            response = caption_generator.import_and_predict(image)
+            captions = response
+            st.write("### 📝 **Generated Captions**:")
+            st.write(response)
 
         except ValueError as e:
             st.error(f"Error obtaining captions: {e}")
