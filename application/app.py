@@ -40,13 +40,25 @@ file = st.file_uploader("Upload your image here:", type=["jpg", "png"])
 if file is not None:
     col1, col2 = st.columns(2)
     with col1:
-        image = Image.open(file).convert('RGB')
-        image.thumbnail((400, 400))
-        st.image(image, caption='Uploaded Image')
+        try:
+            image = Image.open(file).convert('RGB')
+            image.thumbnail((400, 400))
+            st.image(image, caption='Uploaded Image')
+
+        except Exception as e:
+            st.error(f"Error loading image: {e}")
 
     with col2:
-        predictions = script.import_and_predict(image)
-        st.markdown("#### Captions:")
-        st.write(predictions)
+        try:
+            st.write("### Generating Captions... 🧠")
+            st.write(script.import_and_predict(image))
+
+        except ValueError as e:
+            st.error(f"Error obtaining captions: {e}")
+
+        except Exception as e:
+            st.error(f"An unknown error occurred"
+                     f"Error Message: {e}")
+
 else:
     st.text("Please upload an image to generate captions.")
