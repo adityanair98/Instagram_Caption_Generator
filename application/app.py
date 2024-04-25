@@ -52,7 +52,7 @@ if file is not None:
         try:
             st.write("### Generating Captions... 🧠")
             caption_generator = script.InstagramCaptionGenerator()
-            response = caption_generator.import_and_predict(image)
+            response = caption_generator.predict(image)
             captions = response
             st.write("### 📝 **Generated Captions**:")
             st.write(response)
