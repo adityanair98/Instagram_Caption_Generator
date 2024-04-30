@@ -28,9 +28,9 @@ class InstagramCaptionGenerator:
     """
     def __init__(self):
         # Load environment variables
-        load_dotenv()
-        self.google_api_key = os.getenv("GOOGLE_API_KEY")
-        genai.configure(api_key=self.google_api_key)
+        #load_dotenv()
+        #self.google_api_key = os.getenv("GOOGLE_API_KEY")
+        genai.configure(api_key='AIzaSyDMeFOnOflzYJ-cjedJ8ky9AE-yThcNXFk')
         self.gemini_model = genai.GenerativeModel(
             'gemini-pro')
         self.blip_processor = AutoProcessor.from_pretrained(
