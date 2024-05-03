@@ -75,6 +75,6 @@ streamlit run app.py
 ## Contributors
 - [Aditya Nair](https://github.com/adityanair98)
 - [Bhumika Srinivas](https://github.com/bhumikasrc)
-- [Cassie Ritcher](https://github.com/cjrich19)
+- [Cassie Richter](https://github.com/cjrich19)
 - [Jessica Brungard](https://github.com/witchEverly)
 - [Seneth Waterman](https://github.com/seneth-waterman)
