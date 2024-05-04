@@ -1,8 +1,12 @@
 """
-This script defines the InstagramCaptionGenerator class, which generates Instagram captions
-for images using the Google Generative AI API and the Hugging Face Transformers library
-(BLIP and Gemini models). The model from Hugging Face is used to generate the initial
-caption for the image, which is then used as a prompt for the Gemini model to generate
+This script defines the InstagramCaptionGenerator class,
+which generates Instagram captions
+for images using the Google Generative AI API and
+the Hugging Face Transformers library
+(BLIP and Gemini models). The model from Hugging Face is used
+to generate the initial
+caption for the image, which is then used as a prompt for
+the Gemini model to generate
 five distinct and engaging captions for the image.
 """
 import os
@@ -14,22 +18,28 @@ from torchvision import transforms
 
 class InstagramCaptionGenerator:
     """
-    Class for generating Instagram captions for images using BLIP and Gemini models.
+    Class for generating Instagram captions for images using BLIP
+    and Gemini models.
 
     Attributes:
     - google_api_key (str): Google API key for accessing the Generative AI API.
-    - gemini_model (GenerativeModel): Gemini model for generating Instagram captions.
-    - blip_processor (AutoProcessor): BLIP model processor for image captioning.
-    - blip_model (BlipForConditionalGeneration): BLIP model for image captioning.
+    - gemini_model (GenerativeModel): Gemini model for generating
+    Instagram captions.
+    - blip_processor (AutoProcessor): BLIP model processor for
+    image captioning.
+    - blip_model (BlipForConditionalGeneration): BLIP model for
+    image captioning.
 
     Methods:
-    - process_image(image_data): Resize and prepare the image for caption generation.
-    - predict(image_data): Generate five Instagram captions for the provided image.
+    - process_image(image_data): Resize and prepare the image for
+    caption generation.
+    - predict(image_data): Generate five Instagram captions for the
+    provided image.
     """
     def __init__(self):
         # Load environment variables
-        #load_dotenv()
-        #self.google_api_key = os.getenv("GOOGLE_API_KEY")
+        # load_dotenv()
+        # self.google_api_key = os.getenv("GOOGLE_API_KEY")
         genai.configure(api_key='AIzaSyDMeFOnOflzYJ-cjedJ8ky9AE-yThcNXFk')
         self.gemini_model = genai.GenerativeModel(
             'gemini-pro')
@@ -56,14 +66,18 @@ class InstagramCaptionGenerator:
         Generate five Instagram captions for the provided image.
         The image is first processed before generating captions.
 
-        :param image_data: PIL.Image - The image for which captions are to be generated.
+        :param image_data: PIL.Image - The image for which captions
+        are to be generated.
         :return: str - Five Instagram captions formatted as specified.
         """
         # Process image
         processed_image = self.process_image(image_data)
-        inputs = self.blip_processor(images=processed_image, return_tensors="pt")
-        generated_ids = self.blip_model.generate(**inputs, max_new_tokens=100, max_length=100)
-        initial_caption = self.blip_processor.batch_decode(generated_ids, skip_special_tokens=True)
+        inputs = self.blip_processor(images=processed_image,
+                                     return_tensors="pt")
+        generated_ids = self.blip_model.generate(**inputs, max_new_tokens=100,
+                                                 max_length=100)
+        initial_caption = self.blip_processor.\
+            batch_decode(generated_ids, skip_special_tokens=True)
 
         # Generate Instagram captions using Gemini model
         prompt = (
