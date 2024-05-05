@@ -59,8 +59,11 @@ def save_user_data(first_name, last_name, email, phone):
         df = pd.DataFrame(columns=["First Name", "Last Name", "Email", "Phone Number"])
 
     # Add and save new user data (not for production).
-    new_data = {"First Name": first_name, "Last Name": last_name, "Email": email, "Phone Number": phone}
-    df = df.append(new_data, ignore_index=True)
+    new_data = pd.DataFrame({"First Name": [first_name],
+                             "Last Name": [last_name],
+                             "Email": [email],
+                             "Phone Number": [phone]})
+    df = pd.concat([df, new_data], ignore_index=True)
     df.to_csv(csv_file, index=False)
     return None
 
