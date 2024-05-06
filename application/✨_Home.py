@@ -77,7 +77,7 @@ def main():
         if submit_button:
             if first_name and last_name and email and phone:
                 # Uncomment the following line to save user data
-                # save_user_data(first_name, last_name, email, phone)
+                save_user_data(first_name, last_name, email, phone)
                 st.success("Thank you for signing up! We will be in touch soon.")
             else:
                 st.error("Please fill in all the fields.")
