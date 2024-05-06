@@ -6,28 +6,52 @@
 
 ## Table of Contents
 - [Project Overview](#project-overview)
-- [Dataset Description](#dataset-description)
 - [Features](#features)
+- [Repository Description](#repository-description)
 - [Usage](#usage)
 - [Installation](#installation)
 - [Technologies Used](#technologies-used)
 - [Contributors](#contributors)
 
 ## Project Overview
-<div>
-    <p> Welcome to InstaMuse, your go-to tool for generating captivating captions for your Instagram posts! InstaMuse utilizes advanced natural language processing and computer vision algorithms to analyze your images and generate personalized captions tailored to your content. </p>
-    <p> Struggling to find the perfect words to match your pictures? Let InstaMuse do the heavy lifting! With just a simple upload, our app analyzes your image and generate a witty, engaging, or inspiring caption that captures the essence of your moment.</p>
-    <p>Whether you’re a selfie savant, a nature explorer, or a foodie fanatic, InstaMuse is here to amplify your Instagram presence. Jazz up your feed with tailored captions that resonate with your followers and attract new eyes to your profile. It’s quick, easy, and fun!</p>
-</div>
 
-## Dataset Description
-We have compiled a comprehensive dataset by leveraging web scraping techniques with Selenium and complemented it with existing data from <a href="https://www.kaggle.com/datasets/prithvijaunjale/instagram-images-with-captions">Kaggle</a>. At present, we've successfully scraped data from a limited set of 10 profiles. While this initial dataset offers valuable insights, we recognize the potential for further enrichment and expansion when it comes to fine-tuning.
+This repository contains the source code for InstaMuse, a Streamlit app that generates captions for Instagram posts based on the content of the uploaded image. The app uses the BLIP model for image captioning and the Gemini model for generating captions based on the image features and context. The app allows users to upload an image, view the generated captions, customize the captions, and copy the selected caption for use in their Instagram posts..
+
+The app is hosted on Hugging Face Streamlit Spaces, making it easily accessible to users. The user-friendly interface allows users to quickly generate captions for their Instagram posts, helping them save time and effort. The app is designed to provide users with high-quality captions that are tailored to their style and preferences, making it a valuable tool for content creators and social media influencers.
+
+**App Link:** https://huggingface.co/spaces/witchEverly/InstaMuse-Caption-Generator
+
 
 ## Features 
 - Image analysis using the <a href="https://huggingface.co/Salesforce/blip-image-captioning-large">BLIP</a> model.
 - Caption generation based on image features and context using <a href="https://deepmind.google/technologies/gemini/#introduction">Gemini</a>.
 - Customization options to tailor captions to your style and preferences.
 - Hosted on Hugging Face Streamlit Spaces for seamless user experience.
+- Easy-to-use interface for quick and efficient caption generation.
+
+## Repository Description
+
+This repository contains the code for the InstaMuse application, which is a Streamlit app that generates captions for Instagram posts based on the content of the uploaded image. The app uses the BLIP model for image captioning and the Gemini model for generating captions based on the image features and context. The app allows users to upload an image, view the generated captions, customize the captions, and copy the selected caption for use in their Instagram posts.
+Please find the repository structure below:
+
+```
+├── Instagram_Caption_Generator/         # Root directory of the
+│   ├── analyses/                        # Folder containing the analysis notebooks
+│   │   ├── BLIP_Image_Captioning.ipynb  # Notebook for image captioning using BLIP
+│   ├── application/                     # Folder containing the Streamlit application
+│   │   ├── images/                      # Folder containing images used in the application
+│   │   ├── pages/                       # Folder containing the different pages of the application
+│   │   │   ├── 📸_InstaMuse.py          # Main Streamlit application
+│   │   ├── user_data/                   # Folder containing user-uploaded images
+│   │   ├── app_utils.py                 # Utility functions for the Streamlit application
+│   │   ├── CaptionGenerator.py          # Class for generating captions
+│   │   ├── test.py                      # Test file for the CaptionGenerator class
+│   │   ├── ✨_Home.py                   # Home page of the Streamlit application
+│   ├── scratch/                         # Folder containing scratch / obsolete files
+│   ├── .gitignore                       # Standard template for .gitignore file
+│   ├── README.md                        # Readme file for the repository
+│   ├── requirements.txt                 # File containing the required packages
+```
 
 ## Usage
 **App Link: [InstaMuse](https://huggingface.co/spaces/witchEverly/test)**
@@ -61,7 +85,7 @@ pip install -r requirements.txt
 ```
 4. Run the Streamlit app:
 ```bash
-streamlit run app.py
+streamlit run application/pages/📸_InstaMuse.py
 ```
 
 ## Technologies Used
