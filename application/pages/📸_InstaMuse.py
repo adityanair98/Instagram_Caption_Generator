@@ -2,47 +2,15 @@ import os
 import streamlit as st
 from PIL import Image
 import pyperclip
+import CaptionGenerator
 import app_utils as utils
-from CaptionGenerator import CaptionGenerator, load_model
 
 # Define Streamlit configurations
-st.set_page_config(
-    page_title="Instamuse", 
-    page_icon=":camera:", 
-    layout='wide', 
-    menu_items={
-        'Get Help': 'https://www.streamlit.io',
-        'Report a bug': "https://github.com/aditya-67/Instagram_Caption_Generator/issues",
-        'About': "# This is a Streamlit app that uses AI to generate captions for images."
-    }
-)
+st.set_page_config(page_title="Instamuse", page_icon=":camera:", layout='wide')
 
 # Initialize the caption generator
-caption_generator = load_model()
+caption_generator = CaptionGenerator.CaptionGenerator()
 
-# Define aesthetic enhancements, including CSS for the spinner
-st.markdown(
-    """
-    <style>
-    .big-font {
-        font-size:30px !important;
-        font-weight: bold;
-    }
-    .image-shadow {
-        box-shadow: 8px 8px 20px grey;
-    }
-    /* Centering the spinner */
-    .st-bq {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 20px;  /* Make text larger */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # Sidebar configuration
 with st.sidebar:
@@ -53,73 +21,88 @@ with st.sidebar:
 
 # Main page content
 st.markdown('<p class="big-font">InstaMuse Photo Caption Generator</p>', unsafe_allow_html=True)
-st.write("### Upload your photo below and spark some caption magic! ଘ(੭ˊᵕˋ)੭* ੈ✩‧₊")
+st.write("""### Upload your photo below and spark some caption magic! ଘ(੭ˊᵕˋ)੭* ੈ✩‧₊""")
+
+# Load the model for image description
+with st.spinner('Loading Application, this make take a minute :hourglass_flowing_sand:'):
+    # Load the model for image captioning
+    model, processor = utils.init_model()
 
 # Upload image file and process image
-file = st.file_uploader(
-    "Upload your image here:",
-    type=["jpg", "png"],
-    help="Only jpg and png images are supported"
+uploaded_file = st.file_uploader(
+    "Upload your image here:", type=["jpg", "png"], help="Only jpg and png images are supported"
 )
 
-if file:
-    image = Image.open(file)
-    image.thumbnail((600, 600), Image.Resampling.LANCZOS)
 
-    try:
-        desc = caption_generator.image_2_text(image)
-        captions, caption_list, img_description = caption_generator.text_2_caption(desc)
-        st.session_state['captions'] = captions
-        st.session_state['caption_list'] = caption_list
-        st.session_state['img_description'] = img_description
-    except Exception as e:
-        st.error(f"Error generating captions: {e}")
-        captions = None
+if uploaded_file is not None:
+    if 'file' not in st.session_state or uploaded_file != st.session_state['file']:
+        st.session_state['file'] = uploaded_file
 
-    with st.spinner(r'#### :sparkles: :sparkles: Generating... please wait :hourglass_flowing_sand:'):
-        st.session_state['file'] = file
+    image = Image.open(st.session_state['file'])
+    image.thumbnail((400, 400), Image.Resampling.LANCZOS)
+    st.session_state['image'] = image
+    col1, col2 = st.columns(2)
 
-        with st.container():
-            col1, col2 = st.columns(2)
+    with st.container():
+        with col1:
+            st.markdown("## 📸 Your Image:")
+            st.image(st.session_state['image'], caption='Uploaded Image', use_column_width=True)
 
-            with col1:
-                st.markdown("## 📸 Your Image:")
-                st.image(image, caption='Uploaded Image', use_column_width=True)
-
-            with col2:
-                if captions:
+        with col2:
+            with st.spinner(r'#### :sparkles: :sparkles: Generating... please wait :hourglass_flowing_sand:'):
+                if 'captions' not in st.session_state:
+                    desc = caption_generator.image_2_text(image, model, processor)
+                    captions, caption_list, img_description = caption_generator.text_2_caption(desc)
+                    st.session_state['captions'] = captions
+                    st.session_state['caption_list'] = caption_list
+                    st.session_state['img_description'] = img_description
+                    st.empty()
                     st.markdown("## 📝 Generated Captions:")
-                    for caption in caption_list:
-                        if caption.strip():
+                    for caption in st.session_state['caption_list']:
+                        if caption.strip() != "":
                             st.info(f"##### {caption}")
 
-    # Action buttons with functionality
-    if 'captions' in st.session_state and st.session_state['captions']:
-        col1, col2, col3, col4 = st.columns(4)
-        if col1.button("📋 Copy"):
-            pyperclip.copy(st.session_state['captions'])
-            st.success("Caption copied to clipboard!")
+                else:
+                    st.markdown("## 📝 Generated Captions:")
+                    for caption in st.session_state['caption_list']:
+                        if caption.strip() != "":
+                            st.info(f"##### {caption}")
 
-        if col2.button("🔄 Regenerate"):
-            with st.spinner('Regenerating captions...'):
+        st.markdown("---")
+
+        col3, col4, col5, col6 = st.columns(4)
+        if col3.button("📋 Copy Captions"):
+            pyperclip.copy(st.session_state['captions'])
+            st.success("Captions copied to clipboard!")
+
+        if col4.button("🔄 Regenerate Captions"):
+            # Forcefully clear file to trigger reprocessing
+            if 'file' in st.session_state:
+                del st.session_state['file']
+                del st.session_state['captions']
+                del st.session_state['caption_list']
+                del st.session_state['img_description']
                 st.rerun()
 
-        if col3.button("✨ More Hashtags"):
-            with st.spinner('Generating hashtags...'):
-                try:
-                    hashtags = caption_generator.caption_2_hashtag(st.session_state['img_description'])
-                except Exception as e:
-                    st.error(f"Error generating hashtags: {e}")
-                    hashtags = None
-                st.write("### Generated Hashtags:")
-                st.write(f"**{hashtags}**")
+        if col5.button("✨ More Hashtags"):
+            if 'img_description' in st.session_state:
+                with st.spinner('Generating hashtags...'):
+                    try:
+                        hashtags = caption_generator.caption_2_hashtag(st.session_state['img_description'])
+                        st.write("### Generated Hashtags:")
+                        st.write(f"**{hashtags}**")
+                    except Exception as e:
+                        st.error(f"Error generating hashtags: {e}")
 
-        if col4.button(":window: Clear Screen"):
-            st.rerun()
+        if col6.button(":x: Report Issue"):
+            st.write("You are beta testing this app. Please report any issues to the developer. Thank you")
+
+
+st.markdown("---")
 
 with st.expander("Need help?"):
-    st.write("Please contact us at [email](mailto:jess@llmjessica.com)")
+    st.write("Please contact us by [email](mailto:jess@llmjessica.com)")  # Correct the email link
 
-# Footer
 st.markdown("---")
+
 st.caption("Thank you for using InstaMuse! Feel free to contact us for any suggestions or issues.")

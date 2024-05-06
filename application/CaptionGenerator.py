@@ -32,17 +32,16 @@ class CaptionGenerator:
         self.processor = None
         self.model = None
 
-    def image_2_text(self, image_data):
+    def image_2_text(self, image_data, processor, model):
         """
         Generate a caption for the provided image using the BLIP-2 model.
         :param image_data: PIL.Image - The image for which the caption is to be generated.
         :return: description - The description generated for the image.
         """
         try:
-            self.processor, self.model, _ = utils.init_model(init_model_required=True)
-            inputs = self.processor(images=image_data, return_tensors="pt")
-            generated_ids = self.model.generate(**inputs, max_length=100)
-            description = self.processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
+            inputs = processor(images=image_data, return_tensors="pt")
+            generated_ids = model.generate(**inputs, max_length=100)
+            description = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             return description
 
         except Exception as e:
@@ -115,17 +114,6 @@ class CaptionGenerator:
 
         except Exception as e:
             st.error(f"Error occurred with Gemini API: {e}")
-
-
-@st.cache_resource()
-def load_model():
-    """
-    Loads the BLIP-2 model for image captioning. This function is cached to avoid
-    re-loading the model on every call.
-    :param CaptionGenerator:  The class for generating captions for images.
-    :return: Instance of the CaptionGenerator class.
-    """
-    return CaptionGenerator()
 
 
 # Example usage of the CaptionGenerator class
