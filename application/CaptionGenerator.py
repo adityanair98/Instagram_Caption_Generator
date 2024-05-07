@@ -1,14 +1,14 @@
-'''
+"""
 This script contains the CaptionGenerator class,
 which is used to generate Instagram captions for images
 using BLIP and Gemini models.
-'''
+"""
 import google.generativeai as genai
 import streamlit as st
 import app_utils as utils
-from transformers import AutoProcessor, Blip2ForConditionalGeneration
 
 genai.configure(api_key=utils.get_gemini_api_key())
+
 
 class CaptionGenerator:
     """
@@ -18,14 +18,13 @@ class CaptionGenerator:
     engaging captions for the image.
 
     Attributes:
-    - google_api_key (str): Google API key for accessing the Generative AI API.
-    - gemini_model (GenerativeModel): Gemini model for generating Instagram captions.
-    - blip_processor (AutoProcessor): BLIP model processor for image captioning.
-    - blip_model (BlipForConditionalGeneration): BLIP model for image captioning.
-
+    - gemini: GenerativeModel - The Gemini model used to generate Instagram captions.
+    - processor: AutoProcessor - The processor used to prepare the image for caption generation.
+    - model: Blip2ForConditionalGeneration - The BLIP-2 model used to generate the initial caption.
     Methods:
-    - process_image(image_data): Resize and prepare the image for caption generation.
-    - predict(image_data): Generate five Instagram captions for the provided image.
+    - image_2_text(image_data): Generate a caption for the provided image using the BLIP-2 model.
+    - text_2_caption(image_description): Generate five Instagram captions for the provided image.
+    - caption_2_hashtag(caption): Generate additional hashtags based on the content of the caption.
     """
     def __init__(self):
         self.gemini = genai.GenerativeModel('gemini-pro')
@@ -35,7 +34,11 @@ class CaptionGenerator:
     def image_2_text(self, image_data, processor, model):
         """
         Generate a caption for the provided image using the BLIP-2 model.
-        :param image_data: PIL.Image - The image for which the caption is to be generated.
+        :param image_data: PIL.Image - The image for which a caption
+        is to be generated.
+        :param processor: AutoProcessor - The processor used to prepare the
+        image for caption generation.
+        :param model: Blip2ForConditionalGeneration - The BLIP-2 model used
         :return: description - The description generated for the image.
         """
         try:
@@ -47,14 +50,14 @@ class CaptionGenerator:
         except Exception as e:
             st.error(f"Error occurred during image captioning: {e}")
 
-
     def text_2_caption(self, image_description):
         """
-        Generate five Instagram captions for the provided image.
-        The image is first processed before generating captions.
-
-        :param image_description: str - The description of the image for which captions are to be generated.
-        :return: str - Five Instagram captions formatted as specified.
+        Generate five Instagram captions for the provided BLIP-2 image description
+        using the Gemini model.
+        :param image_description: str - The description generated for the image.
+        :return: caption - The caption generated for the image.
+        :return: caption_list - A list of five distinct and engaging captions for the image.
+        :return: image_description - The description generated for the image.
         """
         prompt = (
             f"This caption was generated with a deep learning model."
@@ -83,29 +86,20 @@ class CaptionGenerator:
         except Exception as e:
             st.error(f"Unable to connect to Gemini API: {e}")
 
-
-        # try:
-        #     response = gemini_model.generate_content(prompt)
-        #     caption = response.parts[0].text
-        #     caption_list = response.parts[0].text.split("\n")
-        #     return caption, caption_list, image_description
-        #
-        # except Exception as e:
-        #     st.error(f"Unable to generate captions from description: {e}")
-
     def caption_2_hashtag(self, caption):
         """
         Generate additional hashtags based on the content of the caption.
-
-        :param caption: str - The caption for which hashtags are to be generated.
-        :return: str - Additional hashtags based on the content of the caption.
+        :param: caption - The caption generated for the image.
+        :return: hashtags - The hashtags generated based on the content of the caption.
         """
         # Generate hashtags based on the content of the caption
-        prompt = (f"Given the provided caption, generate relevant hashtags to increase engagement,"
-                  f"and are related to the caption content. Original Image Description: {caption},"
-                  f"Please format your response as follows:\n"
-                  f'[hashtags separated by commas]'
-                  f" \n")
+        prompt = (
+            f"Given the provided caption, generate relevant hashtags to increase engagement,"
+              f"and are related to the caption content. Original Image Description: {caption},"
+              f"Please format your response as follows:\n"
+              f'[hashtags separated by commas]'
+              f" \n"
+        )
 
         try:
             response = self.gemini.generate_content(prompt)

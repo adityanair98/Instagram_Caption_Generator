@@ -12,9 +12,8 @@ from transformers import AutoProcessor, Blip2ForConditionalGeneration
 
 def get_gemini_api_key():
     """
-    The api key is stored in as a private environment variable,
-    the purpose of this function is to retrieve the Google API key
-    for accessing the Generative AI API.
+    Retrieves the Google API key from the environment variables,
+    which is used to configure the Gemini model.
     :return: str - The Google API key.
     """
     load_dotenv()
@@ -29,8 +28,8 @@ def init_model():
     The cache_resource decorator is used to cache the model and processor.
     The streamlit app can call this function to load the model and processor
     without reinitializing it.
-    :param init_model_required: bool - Flag to indicate if the model needs to be initialized.
-    :returns: AutoProcessor, Blip2ForConditionalGeneration, bool - Model processor, BLIP-2 model, and flag.
+    :return: AutoProcessor - The processor used to prepare the image for caption generation.
+    :return: Blip2ForConditionalGeneration - The BLIP-2 model used to generate the initial caption.
     """
     try:
         processor = AutoProcessor.from_pretrained(
@@ -60,8 +59,15 @@ def save_user_data(first_name, last_name, email, phone):
     if csv_file.exists():
         df = pd.read_csv(csv_file)
     else:
-        df = pd.DataFrame(columns=["First Name", "Last Name", "Email", "Phone Number"])
-    new_data = {"First Name": first_name, "Last Name": last_name, "Email": email, "Phone Number": phone}
+        df = pd.DataFrame(
+            columns=["First Name", "Last Name", "Email", "Phone Number"]
+        )
+    new_data = {
+        "First Name": first_name,
+        "Last Name": last_name,
+        "Email": email,
+        "Phone Number": phone
+    }
     df = df.append(new_data, ignore_index=True)
     df.to_csv(csv_file, index=False)
     return None
